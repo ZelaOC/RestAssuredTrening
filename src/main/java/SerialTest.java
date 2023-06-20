@@ -1,5 +1,6 @@
 import POJOs.Product;
 import io.restassured.response.Response;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 
@@ -11,7 +12,7 @@ public class SerialTest extends BaseAPITest{
     @Test
     public void testDeserialization(){
         Product product = when()
-                .get(productsEndpoint+"/393/")
+                .get(productsEndpoint+"/393")
                 .as(Product.class);
 
         System.out.println(product.toString());
@@ -31,5 +32,29 @@ public class SerialTest extends BaseAPITest{
                 .and()
                 .assertThat()
                 .body("name",equalTo("Test Fake Object"));
+    }
+
+    @Test
+    public void excerciseSerialization(){
+
+        Product product = when()
+                .get(productsEndpoint+"/1000")
+                .as(Product.class);
+
+        product.setName("Extra Name of Product");
+        product.setSlug("Changed slug for product");
+
+        given()
+                .contentType("application/json")
+                .body(product)
+                .when()
+                .put(productsEndpoint+"/"+ product.getId())
+                .then()
+                .assertThat()
+                .statusCode(200)
+                .and()
+                .assertThat()
+                .body("name", equalTo("Extra Name of Product"));
+
     }
 }
