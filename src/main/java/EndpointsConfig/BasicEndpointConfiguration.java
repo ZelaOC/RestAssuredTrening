@@ -21,6 +21,14 @@ public abstract class BasicEndpointConfiguration {
         return lastResponse.statusCode();
     }
 
+    public String getLastCreateName(){
+        return lastResponse.jsonPath().get("name");
+    }
+
+    public int getLastCreateID(){
+        return lastResponse.jsonPath().get("id");
+    }
+
     public Response getLastResponse() {
         return lastResponse;
     }
